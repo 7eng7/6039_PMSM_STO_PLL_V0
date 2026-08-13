@@ -1,0 +1,480 @@
+#include "system_et6x.h"
+#include "et6x_cortex.h"
+#include "et6x_crg.h"
+
+#define FLASH_FRQ_25M_LVL     0
+#define FLASH_FRQ_50M_LVL     1
+#define FLASH_FRQ_75M_LVL     2
+#define FLASH_FRQ_100M_LVL    3
+
+/**
+ * @brief PLL Reference Input Configure
+ *
+ * The chip by default uses the external crystal oscillator as the input of the PLL clock source,
+ * and the default frequency of the crystal oscillator is 25 MHz.
+ * If a crystal oscillator with a different frequency is used in the hardware design,
+ * it is necessary to redefine it.!!!
+ */
+#define HSXO_VALUE            25000000U /*!< Value of the HSXO oscillator in Hz */
+
+
+/**
+ * @brief  CPU Clock Configuration
+ * @note  default CPU Clock is 300MHz, unmask macro CPU_200M will change to 200MHz
+ *
+ */
+//#define CPU_200M
+
+#if defined(CPU_200M)
+const static CRG_PLLConfigParam pllInit =
+{
+    CRG_PLL_SOURCE_HSXO, // PLLRefInSrc
+    CRG_PLL_ON,          // PLLState
+    0x20,                // PLLFBDiv
+    0x00,                // PLLFrac
+    0x01,                // PLLPostDiv1
+    0x04,                // PLLPostDiv2
+    0x01,                // PLLRefDiv
+    0x01,                // PLLPostDivBypass
+};
+#else
+const static CRG_PLLConfigParam pllInit =
+{
+    CRG_PLL_SOURCE_HSXO, //  PLLRefInSrc
+    CRG_PLL_ON,          //  PLLState
+    0x30,                //  PLLFBDiv
+    0x00,                //  PLLFrac
+    0x01,                //  PLLPostDiv1
+    0x01,                //  PLLPostDiv2
+    0x01,                //  PLLRefDiv
+    0x00,                //  PLLPostDivBypass
+};
+#endif
+const static CRG_ClockConfigParam clkInit =
+{
+    0x00,              // CPUCLKDivider         //300M
+    0x00,              // BUSCLKDivider         //200M
+    0x01,              // APBCLKDivider         //100M
+    0x01,              // APB3CLKDivider        //100M
+    0x03,              // EFCCLKDivider         //50M
+    0x04,              // CANCLKDivider         //40M
+    0x02,              // ADDACLKDivider        //66.67M
+    0x01,              // AESCLKDivider         //100M
+    0x00,              // CANCLKSrcSel          //PLLFOUT3
+};
+
+
+/* This Array should not place in FLASH AREA */
+const static uint32_t flashTrimParam[4][28] =
+{
+    {
+/* FLASH_FRQ_25M_LVL */
+        0, 5, 1, 139, 0, 0, 5, 139, 3, 106, 79, 395, 1, 1, 319, 1, 214, 1,
+        139, 1319, 5269, 21059, 210589, 210589, 3, 3, 529, 0
+    },
+    {
+/* FLASH_FRQ_50M_LVL */
+        1, 10, 1, 263, 0, 1, 10, 268, 5, 210, 157, 789, 0, 0, 631, 0, 421, 0,
+        263, 2631, 10526, 42105, 421052, 421052, 5, 5, 1052, 1
+    },
+    {
+/* FLASH_FRQ_75M_LVL */
+        2, 16, 2, 399, 1, 2, 16, 409, 9, 319, 239, 1189, 1, 1, 949, 1, 639,
+        1, 399, 3959, 15799, 63199, 631919, 631919, 9, 9, 1589, 1
+    },
+    {
+/* FLASH_FRQ_100M_LVL */
+        3, 22, 3, 529, 2, 3, 22, 549, 11, 424, 319, 1589, 2, 2, 1269, 2, 849,
+        2, 529, 5269, 21059, 84219, 842109, 842109, 10, 10, 2109, 1
+    },
+};
+
+/* Timeout value */
+#define PLLLOCK_TIMEOUT    (3000) /* Timeout value */
+
+/************************* Miscellaneous Configuration ************************/
+
+/*!< Uncomment the following line if you need to relocate your vector Table in
+ *   Internal SRAM. */
+/* #define VECT_TAB_SRAM */
+#define VECT_TAB_OFFSET    0x0 /*!< Vector Table base offset field.
+                                *    This value must be a multiple of 0x200. */
+/******************************************************************************/
+
+
+/* This variable is updated in three ways:
+ *  1) by calling CMSIS function SystemCoreClockUpdate()
+ *  2) by calling HAL API function HAL_RCC_GetHCLKFreq()
+ *  3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency
+ *     Note: If you use this function to configure the system clock; then there
+ *           is no need to call the 2 first functions listed above, since SystemCoreClock
+ *           variable is updated automatically.
+ */
+uint32_t SystemCoreClock = 25000000;
+
+
+/**
+ * @brief  Setup the microcontroller system
+ *         Initialize the Embedded Flash Interface, the PLL and update the
+ *         SystemFrequency variable.
+ * @param  None
+ * @retval None
+ */
+/*
+ * ===========================================================================================================================
+ */
+/* ================                                          CRGCFG
+ *                                           ================ */
+/*
+ * ===========================================================================================================================
+ */
+
+
+/**
+ * @brief Provide an overview of the purpose and functionality of the peripheral: crg_cfg (CRGCFG)
+ */
+#ifdef __cplusplus
+#define   __I        volatile          /*!< Defines 'read only' permissions */
+#else
+#define   __I        volatile const    /*!< Defines 'read only' permissions */
+#endif
+#define     __O      volatile          /*!< Defines 'write only' permissions */
+#define     __IO     volatile          /*!< Defines 'read / write' permissions */
+
+/* following defines should be used for structure members */
+#define     __IM     volatile const      /*! Defines 'read only' structure member permissions */
+#define     __OM     volatile            /*! Defines 'write only' structure member permissions */
+#define     __IOM    volatile            /*! Defines 'read / write' structure member permissions */
+
+static void SystemClock_Config(void)
+{
+    CRG_unlockClockConfig();
+    /* Configure PLL */
+    if (CRG_setPLLConfig((const CRG_PLLConfigParam *)&pllInit, HSXO_VALUE, PLLLOCK_TIMEOUT) == DRV_OK)
+    {
+        /* Configure CPU, BUS, Peripherals Clock  dividers  */
+        if (CRG_setClockDivConfig((const CRG_ClockConfigParam *)&clkInit) != DRV_OK)
+        {
+            while (1);
+        }
+        /* Select PLL Fout Source */
+        if (CRG_setClockOutSource(CRG_CLKSRC_PLL_FOUT) != DRV_OK)
+        {
+            while (1);
+        }
+    }
+    else
+    {
+        while (1);
+    }
+    CRG_lockClockConfig();
+}
+
+/**
+ * @brief PFlash and DFlash Timing trim param load  depend on FLash Clock
+ *  when efc clk switch to higher clock,  trim load first, then switch efc clk(tck_len_trc, tMS, tRC, tACC)
+ *  when efc clk switch to lower clock,  switch efc clc, then load timing trim(tMS, tACC, tRC, tck_len_trc)
+ * @param level  FLASH_FRQ_25M_LVL, FLASH_FRQ_50M_LVL, FLASH_FRQ_75M_LVL, FLASH_FRQ_100M_LVL
+ */
+static void SystemFlash_TrimLoadSF(uint8_t level)
+{
+    uint32_t reg_tmp = 0;
+
+    if (level > FLASH_FRQ_100M_LVL)
+    {
+        return;
+    }
+    /* unlock reg */
+    if (READ_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk))
+    {
+        /* unlock */
+        DFLASH->EFC_REG_KEY1 = 0x0123CDEF;
+        DFLASH->EFC_REG_KEY2 = 0x89AB4567;
+        /* wait clear */
+        while (READ_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk));
+    }
+
+    reg_tmp |= (flashTrimParam[level][23] << DFLASH_EFC_TIMING_PARA8_EFC_TSCE_Pos)
+               & DFLASH_EFC_TIMING_PARA8_EFC_TSCE_Msk;
+    reg_tmp |= (flashTrimParam[level][27] << DFLASH_EFC_TIMING_PARA8_EFC_TCK_LE_TRC_Pos)
+               & DFLASH_EFC_TIMING_PARA8_EFC_TCK_LE_TRC_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA8 = reg_tmp;
+
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][7] << DFLASH_EFC_TIMING_PARA12_EFC_TMS_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TMS_Msk;
+    reg_tmp |= (flashTrimParam[level][8] << DFLASH_EFC_TIMING_PARA12_EFC_TMH_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TMH_Msk;
+
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12,
+               DFLASH_EFC_TIMING_PARA12_EFC_TMS_Msk | DFLASH_EFC_TIMING_PARA12_EFC_TMH_Msk, reg_tmp);
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][0] << DFLASH_EFC_TIMING_PARA0_EFC_TRC_0_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TRC_0_Msk;
+    reg_tmp |= (flashTrimParam[level][1] << DFLASH_EFC_TIMING_PARA0_EFC_TRC_1_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TRC_1_Msk;
+    reg_tmp |= (flashTrimParam[level][2] << DFLASH_EFC_TIMING_PARA0_EFC_TWFH_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TWFH_Msk;
+    reg_tmp |= (flashTrimParam[level][3] << DFLASH_EFC_TIMING_PARA0_EFC_TCFL_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TCFL_Msk;
+    reg_tmp |= (flashTrimParam[level][4] << DFLASH_EFC_TIMING_PARA0_EFC_TCONFEN_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TCONFEN_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA0 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][5] << DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Msk;
+    reg_tmp |= (flashTrimParam[level][6] << DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Msk;
+
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12,
+               DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Msk | DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Msk, reg_tmp);
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][9] << DFLASH_EFC_TIMING_PARA1_EFC_TNVS_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TNVS_Msk;
+    reg_tmp |= (flashTrimParam[level][10] << DFLASH_EFC_TIMING_PARA1_EFC_TPREP_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TPREP_Msk;
+    reg_tmp |= (flashTrimParam[level][12] << DFLASH_EFC_TIMING_PARA1_EFC_TADS_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TADS_Msk;
+    reg_tmp |= (flashTrimParam[level][13] << DFLASH_EFC_TIMING_PARA1_EFC_TADH_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TADH_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA1 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][11] << DFLASH_EFC_TIMING_PARA2_EFC_TPROG_Pos)
+               & DFLASH_EFC_TIMING_PARA2_EFC_TPROG_Msk;
+    reg_tmp |= (flashTrimParam[level][14] << DFLASH_EFC_TIMING_PARA2_EFC_TPGS_Pos)
+               & DFLASH_EFC_TIMING_PARA2_EFC_TPGS_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA2 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][15] << DFLASH_EFC_TIMING_PARA3_EFC_TPGH_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPGH_Msk;
+    reg_tmp |= (flashTrimParam[level][16] << DFLASH_EFC_TIMING_PARA3_EFC_TPREPGS_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPREPGS_Msk;
+    reg_tmp |= (flashTrimParam[level][17] << DFLASH_EFC_TIMING_PARA3_EFC_TPREPGH_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPREPGH_Msk;
+    reg_tmp |= (flashTrimParam[level][24] << DFLASH_EFC_TIMING_PARA3_EFC_TRW_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TRW_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA3 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][18] << DFLASH_EFC_TIMING_PARA4_EFC_TRCV_0_Pos)
+               & DFLASH_EFC_TIMING_PARA4_EFC_TRCV_0_Msk;
+    reg_tmp |= (flashTrimParam[level][20] << DFLASH_EFC_TIMING_PARA4_EFC_TRCV_2_Pos)
+               & DFLASH_EFC_TIMING_PARA4_EFC_TRCV_2_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA4 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][19] << DFLASH_EFC_TIMING_PARA5_EFC_TRCV_1_Pos)
+               & DFLASH_EFC_TIMING_PARA5_EFC_TRCV_1_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA5 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][21] << DFLASH_EFC_TIMING_PARA6_EFC_TERASE_0_Pos)
+               & DFLASH_EFC_TIMING_PARA6_EFC_TERASE_0_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA6 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][22] << DFLASH_EFC_TIMING_PARA7_EFC_TERASE_1_Pos)
+               & DFLASH_EFC_TIMING_PARA7_EFC_TERASE_1_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA7 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][25] << DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Pos)
+               & DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA9 &= ~DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA9 |= reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][26] << DFLASH_EFC_TIMING_PARA11_EFC_TDPDH_Pos)
+               & DFLASH_EFC_TIMING_PARA11_EFC_TDPDH_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA11 = reg_tmp;
+
+    /* lock reg */
+    SET_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk);
+}
+
+static void SystemFlash_TrimLoadFS(uint8_t level)
+{
+    uint32_t reg_tmp = 0;
+
+    if (level > FLASH_FRQ_100M_LVL)
+    {
+        return;
+    }
+    /* unlock reg */
+    if (READ_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk))
+    {
+        /* unlock */
+        DFLASH->EFC_REG_KEY1 = 0x0123CDEF;
+        DFLASH->EFC_REG_KEY2 = 0x89AB4567;
+        /* wait clear */
+        while (READ_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk));
+    }
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][7] << DFLASH_EFC_TIMING_PARA12_EFC_TMS_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TMS_Msk;
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12, DFLASH_EFC_TIMING_PARA12_EFC_TMS_Msk, reg_tmp);
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][5] << DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Msk;
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12, DFLASH_EFC_TIMING_PARA12_EFC_TACC_0_Msk, reg_tmp);
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][6] << DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Msk;
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12, DFLASH_EFC_TIMING_PARA12_EFC_TACC_1_Msk, reg_tmp);
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][8] << DFLASH_EFC_TIMING_PARA12_EFC_TMH_Pos)
+               & DFLASH_EFC_TIMING_PARA12_EFC_TMH_Msk;
+    MODIFY_REG(DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA12, DFLASH_EFC_TIMING_PARA12_EFC_TMH_Msk, reg_tmp);
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][0] << DFLASH_EFC_TIMING_PARA0_EFC_TRC_0_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TRC_0_Msk;
+    reg_tmp |= (flashTrimParam[level][1] << DFLASH_EFC_TIMING_PARA0_EFC_TRC_1_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TRC_1_Msk;
+    reg_tmp |= (flashTrimParam[level][2] << DFLASH_EFC_TIMING_PARA0_EFC_TWFH_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TWFH_Msk;
+    reg_tmp |= (flashTrimParam[level][3] << DFLASH_EFC_TIMING_PARA0_EFC_TCFL_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TCFL_Msk;
+    reg_tmp |= (flashTrimParam[level][4] << DFLASH_EFC_TIMING_PARA0_EFC_TCONFEN_Pos)
+               & DFLASH_EFC_TIMING_PARA0_EFC_TCONFEN_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA0 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][9] << DFLASH_EFC_TIMING_PARA1_EFC_TNVS_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TNVS_Msk;
+    reg_tmp |= (flashTrimParam[level][10] << DFLASH_EFC_TIMING_PARA1_EFC_TPREP_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TPREP_Msk;
+    reg_tmp |= (flashTrimParam[level][12] << DFLASH_EFC_TIMING_PARA1_EFC_TADS_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TADS_Msk;
+    reg_tmp |= (flashTrimParam[level][13] << DFLASH_EFC_TIMING_PARA1_EFC_TADH_Pos)
+               & DFLASH_EFC_TIMING_PARA1_EFC_TADH_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA1 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][11] << DFLASH_EFC_TIMING_PARA2_EFC_TPROG_Pos)
+               & DFLASH_EFC_TIMING_PARA2_EFC_TPROG_Msk;
+    reg_tmp |= (flashTrimParam[level][14] << DFLASH_EFC_TIMING_PARA2_EFC_TPGS_Pos)
+               & DFLASH_EFC_TIMING_PARA2_EFC_TPGS_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA2 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][15] << DFLASH_EFC_TIMING_PARA3_EFC_TPGH_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPGH_Msk;
+    reg_tmp |= (flashTrimParam[level][16] << DFLASH_EFC_TIMING_PARA3_EFC_TPREPGS_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPREPGS_Msk;
+    reg_tmp |= (flashTrimParam[level][17] << DFLASH_EFC_TIMING_PARA3_EFC_TPREPGH_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TPREPGH_Msk;
+    reg_tmp |= (flashTrimParam[level][24] << DFLASH_EFC_TIMING_PARA3_EFC_TRW_Pos)
+               & DFLASH_EFC_TIMING_PARA3_EFC_TRW_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA3 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][18] << DFLASH_EFC_TIMING_PARA4_EFC_TRCV_0_Pos)
+               & DFLASH_EFC_TIMING_PARA4_EFC_TRCV_0_Msk;
+    reg_tmp |= (flashTrimParam[level][20] << DFLASH_EFC_TIMING_PARA4_EFC_TRCV_2_Pos)
+               & DFLASH_EFC_TIMING_PARA4_EFC_TRCV_2_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA4 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][19] << DFLASH_EFC_TIMING_PARA5_EFC_TRCV_1_Pos)
+               & DFLASH_EFC_TIMING_PARA5_EFC_TRCV_1_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA5 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][21] << DFLASH_EFC_TIMING_PARA6_EFC_TERASE_0_Pos)
+               & DFLASH_EFC_TIMING_PARA6_EFC_TERASE_0_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA6 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][22] << DFLASH_EFC_TIMING_PARA7_EFC_TERASE_1_Pos)
+               & DFLASH_EFC_TIMING_PARA7_EFC_TERASE_1_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA7 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][25] << DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Pos)
+               & DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA9 &= ~DFLASH_EFC_TIMING_PARA9_EFC_TDPDSR_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA9 |= reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][26] << DFLASH_EFC_TIMING_PARA11_EFC_TDPDH_Pos)
+               & DFLASH_EFC_TIMING_PARA11_EFC_TDPDH_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA11 = reg_tmp;
+
+    reg_tmp  = 0;
+    reg_tmp |= (flashTrimParam[level][23] << DFLASH_EFC_TIMING_PARA8_EFC_TSCE_Pos)
+               & DFLASH_EFC_TIMING_PARA8_EFC_TSCE_Msk;
+    reg_tmp |= (flashTrimParam[level][27] << DFLASH_EFC_TIMING_PARA8_EFC_TCK_LE_TRC_Pos)
+               & DFLASH_EFC_TIMING_PARA8_EFC_TCK_LE_TRC_Msk;
+    DFLASH->EFC_DFLASH_EXTEND.EFC_TIMING_PARA8 = reg_tmp;
+
+    /* lock reg */
+    SET_BIT(DFLASH->EFC_WPFLG, DFLASH_EFC_WPFLG_EFC_REG_WRPROT_FLG_Msk);
+}
+
+void SystemInit(void)
+{
+    /* Enable Global Interrupt Mask */
+    __enable_irq();
+    /* FPU settings ------------------------------------------------------------*/
+#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+    SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));  /* set CP10 and CP11 Full Access */
+#endif
+#if !defined(CPU_200M)
+    /* Switch System Clock to PLL source */
+    if ((CRG_isClockSrcPLL() != SET) || (HSXO_VALUE != 25000000U))
+#endif
+    {
+        CRG_unlockClockConfig();
+        /* Select PLL Fout Source */
+        if (CRG_setClockOutSource(CRG_CLKSRC_OSC25M) != DRV_OK)
+        {
+            while (1);
+        }
+        DELAY_US(10);
+        /* NOTICE: calling sequence of below two functions cannot be changed!!! */
+        /* FLASH_FRQ_xxM_LVL should match EFC Clock configured by EFCCLKDivider  */
+        SystemFlash_TrimLoadFS(FLASH_FRQ_25M_LVL);
+        SystemFlash_TrimLoadSF(FLASH_FRQ_50M_LVL);
+        SystemClock_Config();
+        /* switch to PLL Clock */
+    }
+
+    /* deassert modules reset */
+    CRG_unlockClockConfig();
+    CRG->SRST3 = 0xFFFFFFFF;
+    CRG->SRST2 = 0xFFFFFFFF;
+    CRG->SRST0 = 0xFFFFFFFF;
+    CRG->SRST1 = 0xFFFFFFFF;
+    CRG_lockClockConfig();
+    /* disable SRAM Single-bit error correction */
+    CLEAR_BIT(SRAMCTL0->AXI2SRAM_CTRL, SRAMCTL0_AXI2SRAM_CTRL_SERR_CORRECTION_EN_Msk);
+    CLEAR_BIT(SRAMCTL1->AXI2SRAM_CTRL, SRAMCTL0_AXI2SRAM_CTRL_SERR_CORRECTION_EN_Msk);
+    /* Remap Vector Table if needed */
+}
+
+/**
+ * @brief  Update SystemCoreClock variable according to Clock Register Values.
+ *         The SystemCoreClock variable contains the core clock (HCLK), it can
+ *         be used by the user application to setup the SysTick timer or configure
+ *         other parameters.
+ *
+ * @note   Each time the core clock (HCLK) changes, this function must be called
+ *         to update SystemCoreClock variable value. Otherwise, any configuration
+ *         based on this variable will be incorrect.
+ *
+ */
+void SystemCoreClockUpdate(void)
+{
+    SystemCoreClock = CRG_getCPUClock();
+}
+
+/************************ (C) COPYRIGHT ETMCU *****END OF FILE****/

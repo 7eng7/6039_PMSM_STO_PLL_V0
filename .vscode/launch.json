@@ -1,0 +1,69 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "ET6039: Build, Flash and Debug",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "D:/ET6039_Debug",
+            "executable": "D:/ET6039_Debug/Keil/Objects/bldc.axf",
+            "loadFiles": [
+                "D:/ET6039_Debug/Keil/Objects/bldc.hex"
+            ],
+            "servertype": "pyocd",
+            "serverpath": "D:/anaconda3/Scripts/pyocd.exe",
+            "gdbPath": "D:/ArmDebugTools/gdb/bin/arm-none-eabi-gdb.exe",
+            "objdumpPath": "D:/mingw64/bin/objdump.exe",
+            "device": "ET6039",
+            "targetId": "et6039",
+            "cmsisPack": "D:/ET6039_Debug/.debug/ETMCU.ET6039_DFP.0.2.4.pack",
+            "svdFile": "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/SVD/ET6039.svd",
+            "interface": "swd",
+            "serverArgs": [
+                "--frequency",
+                "1000000"
+            ],
+            "overrideGDBServerStartedRegex": "GDB server (?:started (?:at|on)|listening on) port",
+            "preLaunchCommands": [
+                "set substitute-path .. D:/ET6039_Debug",
+                "directory D:/ET6039_Debug/Application/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/Any/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/F4xx/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/UILibrary/Src"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Keil: Build",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "ET6039: Attach (no flash)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "D:/ET6039_Debug",
+            "executable": "D:/ET6039_Debug/Keil/Objects/bldc.axf",
+            "servertype": "pyocd",
+            "serverpath": "D:/anaconda3/Scripts/pyocd.exe",
+            "gdbPath": "D:/ArmDebugTools/gdb/bin/arm-none-eabi-gdb.exe",
+            "objdumpPath": "D:/mingw64/bin/objdump.exe",
+            "device": "ET6039",
+            "targetId": "et6039",
+            "cmsisPack": "D:/ET6039_Debug/.debug/ETMCU.ET6039_DFP.0.2.4.pack",
+            "svdFile": "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/SVD/ET6039.svd",
+            "interface": "swd",
+            "serverArgs": [
+                "--frequency",
+                "1000000"
+            ],
+            "overrideGDBServerStartedRegex": "GDB server (?:started (?:at|on)|listening on) port",
+            "preAttachCommands": [
+                "set substitute-path .. D:/ET6039_Debug",
+                "directory D:/ET6039_Debug/Application/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/Any/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/F4xx/Src",
+                "directory D:/ET6039_Debug/MCSDK_v5.4.4-Full/MotorControl/MCSDK/UILibrary/Src"
+            ],
+            "showDevDebugOutput": "none"
+        }
+    ]
+}

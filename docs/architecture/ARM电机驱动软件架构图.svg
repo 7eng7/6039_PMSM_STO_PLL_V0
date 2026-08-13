@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1220" viewBox="0 0 1800 1220">
+  <defs>
+    <style>
+      text { font-family: "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #19324d; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 17px; fill: #557086; }
+      .layer-title { font-size: 22px; font-weight: 700; fill: #ffffff; }
+      .box-title { font-size: 19px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 13px; fill: #526b7f; }
+      .note { font-size: 14px; fill: #6b4a00; }
+      .box { stroke-width: 1.7; rx: 11; ry: 11; }
+      .arrow { stroke: #41657f; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .feedback { stroke: #1c8b77; stroke-width: 2.4; fill: none; marker-end: url(#arrow-green); }
+      .safety { stroke: #d34b4b; stroke-width: 2.8; fill: none; stroke-dasharray: 9 6; marker-end: url(#arrow-red); }
+      .dash { stroke-dasharray: 7 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#41657f"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1c8b77"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#d34b4b"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#18344d" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+
+  <rect width="1800" height="1220" fill="#f5f8fb"/>
+  <text x="900" y="51" text-anchor="middle" class="title">全 ARM 电机驱动产品软件架构</text>
+  <text x="900" y="82" text-anchor="middle" class="subtitle">单 ARM 承载协议、实时控制与辨识；核心能力：电机类型自动识别 + 电机参数在线辨识</text>
+
+  <!-- External inputs -->
+  <rect x="28" y="115" width="238" height="872" rx="16" fill="#eef3f7" stroke="#9aafbf" stroke-width="1.8"/>
+  <rect x="28" y="115" width="238" height="48" rx="16" fill="#607d94"/>
+  <rect x="28" y="143" width="238" height="20" fill="#607d94"/>
+  <text x="147" y="147" text-anchor="middle" class="layer-title">外部输入与反馈</text>
+
+  <rect x="48" y="190" width="198" height="122" class="box" fill="#ffffff" stroke="#9aafbf"/>
+  <text x="147" y="220" text-anchor="middle" class="box-title">上位控制与配置</text>
+  <text x="147" y="247" text-anchor="middle" class="body">CAN / CANopen</text>
+  <text x="147" y="270" text-anchor="middle" class="body">RS232 / 调试下载</text>
+  <text x="147" y="293" text-anchor="middle" class="body">PWM 指令 / DI</text>
+
+  <rect x="48" y="340" width="198" height="154" class="box" fill="#ffffff" stroke="#9aafbf"/>
+  <text x="147" y="370" text-anchor="middle" class="box-title">位置与速度反馈</text>
+  <text x="147" y="398" text-anchor="middle" class="body">增量式编码器 / 霍尔</text>
+  <text x="147" y="421" text-anchor="middle" class="body">SSI / BiSS-C / EnDat</text>
+  <text x="147" y="444" text-anchor="middle" class="body">绝对值编码器</text>
+  <text x="147" y="472" text-anchor="middle" class="small">协议由 ARM 外设+软件实现</text>
+
+  <rect x="48" y="522" width="198" height="142" class="box" fill="#ffffff" stroke="#9aafbf"/>
+  <text x="147" y="552" text-anchor="middle" class="box-title">模拟量反馈</text>
+  <text x="147" y="580" text-anchor="middle" class="body">三相电流 / 母线电压</text>
+  <text x="147" y="605" text-anchor="middle" class="body">温度 / 模拟指令</text>
+  <text x="147" y="636" text-anchor="middle" class="small">ADC 同步采样 + DMA</text>
+
+  <rect x="48" y="692" width="198" height="116" class="box" fill="#fff5f5" stroke="#d76868"/>
+  <text x="147" y="723" text-anchor="middle" class="box-title" fill="#a72f2f">安全与故障输入</text>
+  <text x="147" y="751" text-anchor="middle" class="body">双通道 STO</text>
+  <text x="147" y="776" text-anchor="middle" class="body">过流 / 过压比较器</text>
+
+  <rect x="48" y="837" width="198" height="118" class="box" fill="#ffffff" stroke="#9aafbf"/>
+  <text x="147" y="868" text-anchor="middle" class="box-title">非易失数据</text>
+  <text x="147" y="896" text-anchor="middle" class="body">Flash / EEPROM</text>
+  <text x="147" y="921" text-anchor="middle" class="body">参数集 / 故障历史</text>
+
+  <!-- ARM scope -->
+  <rect x="300" y="115" width="1196" height="1006" rx="18" fill="#ffffff" stroke="#315f7d" stroke-width="2.5" filter="url(#shadow)"/>
+  <rect x="300" y="115" width="1196" height="48" rx="18" fill="#245a78"/>
+  <rect x="300" y="143" width="1196" height="20" fill="#245a78"/>
+  <text x="898" y="147" text-anchor="middle" class="layer-title">单 ARM MCU / SoC 软件域（无 DSP、无 FPGA）</text>
+
+  <!-- Application and services -->
+  <rect x="326" y="184" width="1144" height="154" rx="13" fill="#eaf2ff" stroke="#6390ca" stroke-width="1.7"/>
+  <rect x="326" y="184" width="178" height="154" rx="13" fill="#467db8"/>
+  <rect x="484" y="184" width="20" height="154" fill="#467db8"/>
+  <text x="415" y="234" text-anchor="middle" class="layer-title">产品应用层</text>
+  <text x="415" y="262" text-anchor="middle" class="small" fill="#eaf2ff">状态机与系统服务</text>
+
+  <rect x="530" y="205" width="202" height="106" class="box" fill="#ffffff" stroke="#8eaed5"/>
+  <text x="631" y="235" text-anchor="middle" class="box-title">运行状态机</text>
+  <text x="631" y="261" text-anchor="middle" class="body">上电自检 / 待机 / 辨识</text>
+  <text x="631" y="286" text-anchor="middle" class="body">运行 / 降额 / 故障</text>
+
+  <rect x="752" y="205" width="202" height="106" class="box" fill="#ffffff" stroke="#8eaed5"/>
+  <text x="853" y="235" text-anchor="middle" class="box-title">命令与模式管理</text>
+  <text x="853" y="261" text-anchor="middle" class="body">位置 / 速度 / 转矩</text>
+  <text x="853" y="286" text-anchor="middle" class="body">通信 / PWM / 本地调试</text>
+
+  <rect x="974" y="205" width="220" height="106" class="box" fill="#ffffff" stroke="#8eaed5"/>
+  <text x="1084" y="235" text-anchor="middle" class="box-title">参数与模型管理</text>
+  <text x="1084" y="261" text-anchor="middle" class="body">版本 / CRC / 可信度</text>
+  <text x="1084" y="286" text-anchor="middle" class="body">持久化 / 回滚 / 默认值</text>
+
+  <rect x="1214" y="205" width="230" height="106" class="box" fill="#ffffff" stroke="#8eaed5"/>
+  <text x="1329" y="235" text-anchor="middle" class="box-title">诊断与功能安全监控</text>
+  <text x="1329" y="261" text-anchor="middle" class="body">故障分级 / 降额 / 日志</text>
+  <text x="1329" y="286" text-anchor="middle" class="body">看门狗 / STO 状态监测</text>
+
+  <!-- Identification core -->
+  <rect x="326" y="362" width="1144" height="300" rx="13" fill="#fffaf0" stroke="#d99a26" stroke-width="2.2"/>
+  <text x="348" y="397" class="box-title" fill="#9a6100">核心智能层：辨识、验证与模型切换</text>
+
+  <rect x="348" y="420" width="486" height="214" class="box" fill="#fff2d8" stroke="#e19b1d" stroke-width="2.2"/>
+  <text x="591" y="455" text-anchor="middle" class="box-title" fill="#9a6100">核心功能 1：电机类型自动识别</text>
+  <text x="374" y="488" class="body">① 安全激励与响应采集</text>
+  <text x="374" y="516" class="body">② 特征提取：反电势、凸极性、相序、霍尔/编码器</text>
+  <text x="374" y="544" class="body">③ 候选模型判别 + 置信度评估</text>
+  <text x="374" y="572" class="body">④ 选择控制模型、传感器模式与初始参数集</text>
+  <rect x="374" y="588" width="434" height="31" rx="6" fill="#ffffff" stroke="#d9b971"/>
+  <text x="591" y="609" text-anchor="middle" class="small">PMSM（SPM/IPM）/ BLDC / IM（按硬件与产品范围裁剪）</text>
+
+  <rect x="858" y="420" width="586" height="214" class="box" fill="#e8f7f0" stroke="#42a277" stroke-width="2.2"/>
+  <text x="1151" y="455" text-anchor="middle" class="box-title" fill="#18704f">核心功能 2：电机参数在线辨识</text>
+  <text x="884" y="488" class="body">快速电气参数：Rs、Ld/Lq、磁链 ψf</text>
+  <text x="884" y="516" class="body">机械参数：转动惯量 J、粘性阻尼 B、负载扰动</text>
+  <text x="884" y="544" class="body">安装参数：极对数 p、编码器零位与方向（调试/静态）</text>
+  <text x="884" y="572" class="body">算法：RLS / MRAS / EKF / 注入法（按工况调度）</text>
+  <rect x="884" y="588" width="534" height="31" rx="6" fill="#ffffff" stroke="#8bc9ae"/>
+  <text x="1151" y="609" text-anchor="middle" class="small">质量门控 → 限幅/滤波 → 无扰更新 → 异常回滚</text>
+
+  <path d="M834 527 L858 527" class="arrow"/>
+  <path d="M591 634 L591 650 L1084 650 L1084 634" class="feedback dash"/>
+
+  <!-- Control layer -->
+  <rect x="326" y="686" width="1144" height="222" rx="13" fill="#eef8fb" stroke="#4d9aae" stroke-width="1.8"/>
+  <rect x="326" y="686" width="178" height="222" rx="13" fill="#2d8396"/>
+  <rect x="484" y="686" width="20" height="222" fill="#2d8396"/>
+  <text x="415" y="756" text-anchor="middle" class="layer-title">实时控制层</text>
+  <text x="415" y="784" text-anchor="middle" class="small" fill="#eaf8fb">确定性闭环与调制</text>
+
+  <rect x="530" y="712" width="202" height="164" class="box" fill="#ffffff" stroke="#77adba"/>
+  <text x="631" y="744" text-anchor="middle" class="box-title">轨迹与三环控制</text>
+  <text x="631" y="772" text-anchor="middle" class="body">轨迹规划 / 限幅</text>
+  <text x="631" y="798" text-anchor="middle" class="body">位置环 / 速度环</text>
+  <text x="631" y="824" text-anchor="middle" class="body">电流环 / 前馈</text>
+  <text x="631" y="850" text-anchor="middle" class="small">模型参数实时读取</text>
+
+  <rect x="752" y="712" width="226" height="164" class="box" fill="#ffffff" stroke="#77adba"/>
+  <text x="865" y="744" text-anchor="middle" class="box-title">FOC / 电机模型</text>
+  <text x="865" y="772" text-anchor="middle" class="body">Clarke / Park / 解耦</text>
+  <text x="865" y="798" text-anchor="middle" class="body">MTPA / 弱磁 / 观测器</text>
+  <text x="865" y="824" text-anchor="middle" class="body">SPM/IPM/BLDC/IM 策略</text>
+  <text x="865" y="850" text-anchor="middle" class="small">由类型识别结果选择</text>
+
+  <rect x="998" y="712" width="202" height="164" class="box" fill="#ffffff" stroke="#77adba"/>
+  <text x="1099" y="744" text-anchor="middle" class="box-title">估算与反馈处理</text>
+  <text x="1099" y="772" text-anchor="middle" class="body">角度 / 速度融合</text>
+  <text x="1099" y="798" text-anchor="middle" class="body">电流偏置与标定</text>
+  <text x="1099" y="824" text-anchor="middle" class="body">扰动 / 温升估算</text>
+  <text x="1099" y="850" text-anchor="middle" class="small">向在线辨识提供数据</text>
+
+  <rect x="1220" y="712" width="224" height="164" class="box" fill="#ffffff" stroke="#77adba"/>
+  <text x="1332" y="744" text-anchor="middle" class="box-title">SVPWM 与快速保护</text>
+  <text x="1332" y="772" text-anchor="middle" class="body">占空比 / 死区补偿</text>
+  <text x="1332" y="798" text-anchor="middle" class="body">过调制 / 母线补偿</text>
+  <text x="1332" y="824" text-anchor="middle" class="body">PWM 紧急封锁</text>
+  <text x="1332" y="850" text-anchor="middle" class="small">硬件故障输入优先</text>
+
+  <path d="M732 794 L752 794" class="arrow"/>
+  <path d="M978 794 L998 794" class="feedback"/>
+  <path d="M1200 794 L1220 794" class="arrow"/>
+
+  <!-- Platform layer -->
+  <rect x="326" y="932" width="1144" height="162" rx="13" fill="#f1f3f5" stroke="#8b9aa5" stroke-width="1.8"/>
+  <rect x="326" y="932" width="178" height="162" rx="13" fill="#687987"/>
+  <rect x="484" y="932" width="20" height="162" fill="#687987"/>
+  <text x="415" y="988" text-anchor="middle" class="layer-title">平台与驱动层</text>
+  <text x="415" y="1016" text-anchor="middle" class="small" fill="#eef2f4">RTOS/调度 + HAL/BSP</text>
+
+  <rect x="530" y="954" width="202" height="116" class="box" fill="#ffffff" stroke="#a4afb7"/>
+  <text x="631" y="983" text-anchor="middle" class="box-title">实时调度</text>
+  <text x="631" y="1009" text-anchor="middle" class="body">PWM ISR：10–40 kHz</text>
+  <text x="631" y="1034" text-anchor="middle" class="body">速度/辨识：0.1–2 kHz</text>
+  <text x="631" y="1057" text-anchor="middle" class="small">通信与诊断：后台任务</text>
+
+  <rect x="752" y="954" width="320" height="116" class="box" fill="#ffffff" stroke="#a4afb7"/>
+  <text x="912" y="983" text-anchor="middle" class="box-title">采样、定时器与位置接口驱动</text>
+  <text x="912" y="1009" text-anchor="middle" class="body">ADC+DMA / 高级 PWM / 比较器 / QEI</text>
+  <text x="912" y="1034" text-anchor="middle" class="body">SPI/SSI / 捕获比较 / CRC / 时间戳</text>
+  <text x="912" y="1057" text-anchor="middle" class="small">BiSS-C/EnDat 需做最坏时序与 CPU 占用验证</text>
+
+  <rect x="1092" y="954" width="352" height="116" class="box" fill="#ffffff" stroke="#a4afb7"/>
+  <text x="1268" y="983" text-anchor="middle" class="box-title">通信、存储与可靠性驱动</text>
+  <text x="1268" y="1009" text-anchor="middle" class="body">CAN / UART / GPIO / Flash / EEPROM</text>
+  <text x="1268" y="1034" text-anchor="middle" class="body">CRC / 双区参数 / WDG / 时钟与内存自检</text>
+  <text x="1268" y="1057" text-anchor="middle" class="small">Bootloader / 在线升级（可选）</text>
+
+  <!-- Inter-layer arrows -->
+  <path d="M853 338 L853 362" class="arrow"/>
+  <path d="M591 662 L591 686" class="arrow"/>
+  <path d="M1151 662 L1151 686" class="arrow"/>
+  <path d="M865 908 L865 932" class="arrow"/>
+  <path d="M1099 932 L1099 908" class="feedback"/>
+  <path d="M1084 420 L1084 338" class="feedback dash"/>
+
+  <!-- External connections -->
+  <path d="M246 251 L530 251" class="arrow"/>
+  <path d="M246 417 L300 417 L300 1012 L752 1012" class="feedback"/>
+  <path d="M246 593 L285 593 L285 1035 L752 1035" class="feedback"/>
+  <path d="M246 896 L300 896 L300 1052 L1092 1052" class="arrow dash"/>
+
+  <!-- Power stage / motor -->
+  <rect x="1534" y="115" width="238" height="872" rx="16" fill="#eef3f7" stroke="#9aafbf" stroke-width="1.8"/>
+  <rect x="1534" y="115" width="238" height="48" rx="16" fill="#607d94"/>
+  <rect x="1534" y="143" width="238" height="20" fill="#607d94"/>
+  <text x="1653" y="147" text-anchor="middle" class="layer-title">执行对象</text>
+
+  <rect x="1554" y="356" width="198" height="126" class="box" fill="#ffffff" stroke="#9aafbf"/>
+  <text x="1653" y="391" text-anchor="middle" class="box-title">栅极驱动与逆变器</text>
+  <text x="1653" y="421" text-anchor="middle" class="body">三相 MOSFET</text>
+  <text x="1653" y="449" text-anchor="middle" class="small">PWM / EN / FAULT</text>
+
+  <rect x="1554" y="548" width="198" height="150" class="box" fill="#e8f7f0" stroke="#42a277" stroke-width="2"/>
+  <text x="1653" y="585" text-anchor="middle" class="box-title">被驱电机与负载</text>
+  <text x="1653" y="616" text-anchor="middle" class="body">未知类型 / 未知参数</text>
+  <text x="1653" y="644" text-anchor="middle" class="body">位置、速度、电流响应</text>
+  <text x="1653" y="674" text-anchor="middle" class="small">辨识后闭环运行</text>
+
+  <rect x="1554" y="751" width="198" height="128" class="box" fill="#fff5f5" stroke="#d76868" stroke-width="2"/>
+  <text x="1653" y="786" text-anchor="middle" class="box-title" fill="#a72f2f">独立硬件安全链</text>
+  <text x="1653" y="816" text-anchor="middle" class="body">STO / 比较器</text>
+  <text x="1653" y="844" text-anchor="middle" class="small">直接关断栅极使能</text>
+
+  <path d="M1444 794 L1510 794 L1510 419 L1554 419" class="arrow"/>
+  <path d="M1653 482 L1653 548" class="arrow"/>
+  <path d="M1554 623 L1496 623 L1496 842 L1200 842" class="feedback"/>
+  <path d="M246 750 L1518 750 L1518 815 L1554 815" class="safety"/>
+  <path d="M1554 815 L1518 815 L1518 449 L1554 449" class="safety"/>
+
+  <!-- Footer notes -->
+  <rect x="28" y="1144" width="1744" height="51" rx="9" fill="#fff7df" stroke="#dfb953"/>
+  <text x="50" y="1167" class="note">设计边界：</text>
+  <text x="132" y="1167" class="note">STO 与快速过流关断不能只依赖 ARM 软件；类型识别必须在限流、限速、可中止的辨识状态中执行。</text>
+  <text x="50" y="1188" class="note">参数边界：</text>
+  <text x="132" y="1188" class="note">Rs/Ld/Lq/ψf/J/B 可在线跟踪；极对数、相序、编码器零位宜在调试或停机阶段辨识，并经过可信度与一致性校验后启用。</text>
+</svg>

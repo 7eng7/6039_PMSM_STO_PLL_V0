@@ -1,0 +1,49 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "ET6039 (ArmClang 6.24)",
+            "compilerPath": "D:/Keil_v5/ARM/ARMCLANG/bin/armclang.exe",
+            "compilerArgs": [
+                "--target=arm-arm-none-eabi",
+                "-mcpu=cortex-m7",
+                "-mfpu=fpv5-sp-d16",
+                "-mfloat-abi=hard"
+            ],
+            "intelliSenseMode": "windows-clang-arm",
+            "cStandard": "c99",
+            "cppStandard": "c++11",
+            "defines": [
+                "FLASH_CODE",
+                "USE_FULL_ASSERT"
+            ],
+            "includePath": [
+                "${workspaceFolder}/Application/Inc",
+                "${workspaceFolder}/Application/Src",
+                "${workspaceFolder}/Keil/RTE/_FLASH",
+                "${workspaceFolder}/Keil/RTE/Device/ET6039",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/Any/Inc",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/F4xx/Inc",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/UILibrary/Inc",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/Any/Src",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/MCLib/F4xx/Src",
+                "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK/UILibrary/Src",
+                "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/Device/Include",
+                "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/ET6x_Driver/Inc",
+                "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/ET6x_Driver/Src",
+                "D:/Keil_v5/ARM/Packs/ARM/CMSIS/6.2.0/CMSIS/Core/Include"
+                
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/Application",
+                    "${workspaceFolder}/MCSDK_v5.4.4-Full/MotorControl/MCSDK",
+                    "${workspaceFolder}/Keil/RTE",
+                    "D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4",
+                    "D:/Keil_v5/ARM/Packs/ARM/CMSIS/6.2.0/CMSIS/Core/Include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ]
+}

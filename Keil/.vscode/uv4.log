@@ -1,0 +1,5 @@
+*** Using Compiler 'V6.24', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'FLASH'
+After Build - User command #1: D:\Keil_v5\\ARM\ARMCLANG\bin\fromelf.exe --bin --output=bldc.bin .\Objects\bldc.axf
+".\Objects\bldc.axf" - 0 Error(s), 0 Warning(s).
+Build Time Elapsed:  00:00:01

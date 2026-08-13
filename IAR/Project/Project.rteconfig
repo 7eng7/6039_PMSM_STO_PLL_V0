@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+  <packages/>
+  <device Dclock="200000000" Dcore="Cortex-M7" Dendian="Little-endian" Dfamily="ET600x" Dfpu="SP_FPU" Dmpu="MPU" Dname="ET6039" Dvendor="ETMCU" info="ARM , 96 KB RAM, 512 KB ROM" url="https://www.keil.com/dd2/etmcu/et6039">
+    <package info="Device Family Pack for ET6039" name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+  </device>
+  <toolchain Tcompiler="IAR" Toutput="exe"/>
+  <components>
+    <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="6.1.0">
+      <package name="CMSIS" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
+      <file category="doc" name="CMSIS/Documentation/html/Core/index.html"/>
+      <file category="include" name="CMSIS/Core/Include/"/>
+      <file category="header" condition="TrustZone" name="CMSIS/Core/Include/tz_context.h"/>
+      <file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/main_s.c" select="Secure mode 'main' module for ARMv8-M" version="1.1.1"/>
+      <file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/tz_context.c" select="RTOS Context Management (TrustZone for ARMv8-M)" version="1.1.1"/>
+    </component>
+    <component Cclass="CMSIS" Cgroup="DSP" Cvariant="Source" Cvendor="ARM" Cversion="1.16.2">
+      <package name="CMSIS-DSP" url="https://www.keil.com/pack/" vendor="ARM" version="1.16.2"/>
+      <file category="doc" name="Documentation/html/index.html"/>
+      <file category="header" name="Include/arm_math.h"/>
+      <file category="header" name="Include/arm_math_f16.h"/>
+      <file category="header" name="Include/arm_common_tables.h"/>
+      <file category="header" name="Include/arm_common_tables_f16.h"/>
+      <file category="header" name="Include/arm_const_structs.h"/>
+      <file category="header" name="Include/arm_const_structs_f16.h"/>
+      <file category="include" name="PrivateInclude/"/>
+      <file category="include" name="Include/"/>
+      <file category="source" name="Source/BasicMathFunctions/BasicMathFunctions.c"/>
+      <file category="source" name="Source/QuaternionMathFunctions/QuaternionMathFunctions.c"/>
+      <file category="source" name="Source/BayesFunctions/BayesFunctions.c"/>
+      <file category="source" name="Source/CommonTables/CommonTables.c"/>
+      <file category="source" name="Source/ComplexMathFunctions/ComplexMathFunctions.c"/>
+      <file category="source" name="Source/ControllerFunctions/ControllerFunctions.c"/>
+      <file category="source" name="Source/DistanceFunctions/DistanceFunctions.c"/>
+      <file category="source" name="Source/FastMathFunctions/FastMathFunctions.c"/>
+      <file category="source" name="Source/FilteringFunctions/FilteringFunctions.c"/>
+      <file category="source" name="Source/MatrixFunctions/MatrixFunctions.c"/>
+      <file category="source" name="Source/StatisticsFunctions/StatisticsFunctions.c"/>
+      <file category="source" name="Source/SupportFunctions/SupportFunctions.c"/>
+      <file category="source" name="Source/SVMFunctions/SVMFunctions.c"/>
+      <file category="source" name="Source/TransformFunctions/TransformFunctions.c"/>
+      <file category="source" name="Source/InterpolationFunctions/InterpolationFunctions.c"/>
+      <file category="source" name="Source/WindowFunctions/WindowFunctions.c"/>
+      <file category="source" name="Source/BasicMathFunctions/BasicMathFunctionsF16.c"/>
+      <file category="source" name="Source/ComplexMathFunctions/ComplexMathFunctionsF16.c"/>
+      <file category="source" name="Source/FilteringFunctions/FilteringFunctionsF16.c"/>
+      <file category="source" name="Source/CommonTables/CommonTablesF16.c"/>
+      <file category="source" name="Source/TransformFunctions/TransformFunctionsF16.c"/>
+      <file category="source" name="Source/MatrixFunctions/MatrixFunctionsF16.c"/>
+      <file category="source" name="Source/InterpolationFunctions/InterpolationFunctionsF16.c"/>
+      <file category="source" name="Source/StatisticsFunctions/StatisticsFunctionsF16.c"/>
+      <file category="source" name="Source/SupportFunctions/SupportFunctionsF16.c"/>
+      <file category="source" name="Source/FastMathFunctions/FastMathFunctionsF16.c"/>
+      <file category="source" name="Source/DistanceFunctions/DistanceFunctionsF16.c"/>
+      <file category="source" name="Source/BayesFunctions/BayesFunctionsF16.c"/>
+      <file category="source" name="Source/SVMFunctions/SVMFunctionsF16.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="ACMP" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_acmp.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_acmp.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="ADC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_adc.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_adc.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="AES" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_aes.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_aes.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="CAN" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_can.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_can.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="CORDIC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_cordic.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_cordic.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="CORTEX" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_cortex.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_cortex.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="CRC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_crc.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_crc.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="CRG" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_crg.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_crg.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="DAC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_dac.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_dac.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="DMA" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_ahbdma.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_ahbdma.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="EFC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_flash.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_flash.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="EQEP" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_eqep.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_eqep.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="ETIMER" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_etimer.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_etimer.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="FMAC" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_fmac.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_fmac.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="GPIO" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_gpio.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_gpio.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="I2C" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_i2c.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_i2c.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="INTERRUPT" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_interrupt.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_interrupt.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="SDFM" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_sdfm.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_sdfm.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="SPI" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_spi.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_spi.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="SRPWM" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_srpwm.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_srpwm.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="STIMER" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_stimer.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_stimer.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="SYSCTRL" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_sysctrl.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_sysctrl.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="UART" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_uart.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_uart.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="WAG" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_wag.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_wag.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="WDG" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_wdg.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_wdg.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Drivers" Csub="XBAR" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="header" deviceDependent="1" name="ET6x_Driver/Inc/et6x_xbar.h"/>
+      <file category="sourceC" deviceDependent="1" name="ET6x_Driver/Src/et6x_xbar.c"/>
+    </component>
+    <component Cclass="Device" Cgroup="Startup" Cvendor="ETMCU" Cversion="0.2.3" deviceDependent="1">
+      <package name="ET6039_DFP" url="https://www.etmcu.com/product/detail/77/" vendor="ETMCU" version="0.2.4"/>
+      <file category="include" deviceDependent="1" name="Device/Include/"/>
+      <file attr="config" category="sourceAsm" condition="Toolchain.IAR" deviceDependent="1" name="Device/Source/arm/startup_et6039_iar.s" version="0.2.3"/>
+      <file attr="config" category="sourceC" deviceDependent="1" name="Device/Source/system_et6x.c" version="0.2.3"/>
+    </component>
+  </components>
+  <apis/>
+</configuration>

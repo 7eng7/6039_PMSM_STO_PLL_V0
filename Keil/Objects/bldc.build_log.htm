@@ -1,0 +1,168 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.43.1.0
+Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Tim Tom, univ, LIC=65ISZ-J0H1K-01KP1-CN2SC-Y2SWK-1JLBH
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.43.0.0
+Toolchain Path:  D:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.24
+Assembler:       Armasm.exe V6.24
+Linker/Locator:  ArmLink.exe V6.24
+Library Manager: ArmAr.exe V6.24
+Hex Converter:   FromElf.exe V6.24
+CPU DLL:         SARMCM3.DLL V5.43.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      CMSIS_AGDI.dll V1.33.24.0
+Dialog DLL:      TCM.DLL V1.56.6.0
+ 
+<h2>Project:</h2>
+e:\Electric Motor Project\6039_PMSM_STO_PLL_V0\Keil\bldc.uvprojx
+Project File Date:  07/17/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.24', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'FLASH'
+After Build - User command #1: D:\Keil_v5\\ARM\ARMCLANG\bin\fromelf.exe --bin --output=bldc.bin .\Objects\bldc.axf
+".\Objects\bldc.axf" - 0 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                https://www.keil.com/pack/ARM.CMSIS.6.2.0.pack
+                ARM::CMSIS@6.2.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 6.1.1
+
+Package Vendor: ETMCU
+                https://www.etmcu.com/product/detail/77/ETMCU.ET6039_DFP.0.2.4.pack
+                ETMCU::ET6039_DFP@0.2.4
+                Device Family Pack for ET6039
+   * Component: ACMP Version: 0.2.3
+   * Component: ADC Version: 0.2.3
+   * Component: AES Version: 0.2.3
+   * Component: CORTEX Version: 0.2.3
+   * Component: CRC Version: 0.2.3
+   * Component: CRG Version: 0.2.3
+   * Component: DAC Version: 0.2.3
+   * Component: DMA Version: 0.2.3
+   * Component: EFC Version: 0.2.3
+   * Component: EQEP Version: 0.2.3
+   * Component: ETIMER Version: 0.2.3
+   * Component: GPIO Version: 0.2.3
+   * Component: I2C Version: 0.2.3
+   * Component: INTERRUPT Version: 0.2.3
+   * Component: SPI Version: 0.2.3
+   * Component: SRPWM Version: 0.2.3
+   * Component: STIMER Version: 0.2.3
+   * Component: SYSCTRL Version: 0.2.3
+   * Component: UART Version: 0.2.3
+   * Component: WDG Version: 0.2.3
+   * Component: XBAR Version: 0.2.3
+   * Component: Startup Version: 0.2.3
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_FLASH
+  D:/Keil_v5/ARM/Packs/ARM/CMSIS/6.2.0/CMSIS/Core/Include
+  D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/Device/Include
+  D:/Keil_v5/ARM/Packs/ETMCU/ET6039_DFP/0.2.4/ET6x_Driver/Inc
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE@6.1.1
+
+   * Component: ETMCU::Device:Drivers:ACMP@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_acmp.c
+      Include file:  ET6x_Driver/Inc/et6x_acmp.h
+
+   * Component: ETMCU::Device:Drivers:ADC@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_adc.c
+      Include file:  ET6x_Driver/Inc/et6x_adc.h
+
+   * Component: ETMCU::Device:Drivers:AES@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_aes.c
+      Include file:  ET6x_Driver/Inc/et6x_aes.h
+
+   * Component: ETMCU::Device:Drivers:CORTEX@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_cortex.h
+      Source file:   ET6x_Driver/Src/et6x_cortex.c
+
+   * Component: ETMCU::Device:Drivers:CRC@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_crc.c
+      Include file:  ET6x_Driver/Inc/et6x_crc.h
+
+   * Component: ETMCU::Device:Drivers:CRG@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_crg.h
+      Source file:   ET6x_Driver/Src/et6x_crg.c
+
+   * Component: ETMCU::Device:Drivers:DAC@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_dac.c
+      Include file:  ET6x_Driver/Inc/et6x_dac.h
+
+   * Component: ETMCU::Device:Drivers:DMA@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_ahbdma.c
+      Include file:  ET6x_Driver/Inc/et6x_ahbdma.h
+
+   * Component: ETMCU::Device:Drivers:EFC@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_flash.h
+      Source file:   ET6x_Driver/Src/et6x_flash.c
+
+   * Component: ETMCU::Device:Drivers:EQEP@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_eqep.h
+      Source file:   ET6x_Driver/Src/et6x_eqep.c
+
+   * Component: ETMCU::Device:Drivers:ETIMER@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_etimer.h
+      Source file:   ET6x_Driver/Src/et6x_etimer.c
+
+   * Component: ETMCU::Device:Drivers:GPIO@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_gpio.h
+      Source file:   ET6x_Driver/Src/et6x_gpio.c
+
+   * Component: ETMCU::Device:Drivers:I2C@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_i2c.h
+      Source file:   ET6x_Driver/Src/et6x_i2c.c
+
+   * Component: ETMCU::Device:Drivers:INTERRUPT@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_interrupt.c
+      Include file:  ET6x_Driver/Inc/et6x_interrupt.h
+
+   * Component: ETMCU::Device:Drivers:SPI@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_spi.h
+      Source file:   ET6x_Driver/Src/et6x_spi.c
+
+   * Component: ETMCU::Device:Drivers:SRPWM@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_srpwm.h
+      Source file:   ET6x_Driver/Src/et6x_srpwm.c
+
+   * Component: ETMCU::Device:Drivers:STIMER@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_stimer.c
+      Include file:  ET6x_Driver/Inc/et6x_stimer.h
+
+   * Component: ETMCU::Device:Drivers:SYSCTRL@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_sysctrl.c
+      Include file:  ET6x_Driver/Inc/et6x_sysctrl.h
+
+   * Component: ETMCU::Device:Drivers:UART@0.2.3
+      Include file:  ET6x_Driver/Inc/et6x_uart.h
+      Source file:   ET6x_Driver/Src/et6x_uart.c
+
+   * Component: ETMCU::Device:Drivers:WDG@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_wdg.c
+      Include file:  ET6x_Driver/Inc/et6x_wdg.h
+
+   * Component: ETMCU::Device:Drivers:XBAR@0.2.3
+      Source file:   ET6x_Driver/Src/et6x_xbar.c
+      Include file:  ET6x_Driver/Inc/et6x_xbar.h
+
+   * Component: ETMCU::Device:Startup@0.2.3
+      Source file:   Device/Source/arm/startup_et6039.s
+      Source file:   Device/Source/system_et6x.c
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
