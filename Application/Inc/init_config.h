@@ -58,6 +58,7 @@ void user_adc_init(void);
 void user_srpwm_init(void);
 void user_uart_init(void);
 void sd_gpio_init(void);
+void sa_gpio_init(void);
 
 void ADC0_IRQHandler(void);
 void USER_UART_IRQHandler(void);
